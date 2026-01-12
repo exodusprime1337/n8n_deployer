@@ -59,6 +59,11 @@ This project provides a deployment setup for [n8n](https://n8n.io/) and [Supabas
    ```
 
 4. **Access your services**
+   If you're running locally with the self signed cert on your workstation, you can add the domains you created to your host file so that you can use them during your testing.
+
+   For actual domains and the Nginx proxy, this guide assumes you know how to create and provision certs for use with NGINX but you're more than welcome to modify and use a reverse proxy of your own choosing, or just access the endpoints directly from the host.
+
+   In a more production environment it is best to only expose the services liek Qdrant, N8N, and supabase to a proxy and not access or interact with these resources directly as there are a multitude of security concerns.
 
    - n8n: [https://n8n.mydomain.com](https://n8n.mydomain.com)
    - Supabase: [https://supabase.mydomain.com](ttps://supabase.mydomain.com)
