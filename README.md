@@ -2,6 +2,11 @@
 
 This project provides a deployment setup for [n8n](https://n8n.io/) and [Supabase](https://supabase.com/) using Docker Compose, with [NGINX](https://nginx.org/) as a reverse proxy.
 
+| Component | Version  |
+| --------- | -------- |
+| n8n       | ` 2.2.4` |
+| Qdrant    | `1.16.3` |
+
 ## Features
 
 - Automated environment file creation
@@ -39,16 +44,16 @@ This project provides a deployment setup for [n8n](https://n8n.io/) and [Supabas
 
 3. **Create or supply your SSL certs.**
 
-- You can create test certs for your domain using the below code.
+   - You can create test certs for your domain using the below code.
 
-```bash
+   ```bash
    openssl req -x509 -nodes -days 365 \
    -newkey rsa:2048 \
    -keyout nginx/certs/privkey.pem \
    -out nginx/certs/fullchain.pem \
    -subj "/CN=*.mydomain.com"
 
-```
+   ```
 
 - Review the nginx conf file inside of **./nginx/nginx.conf** to validate or set your hostnames for Supabase and N8N and confirm the cert names
 
