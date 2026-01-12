@@ -1,0 +1,87 @@
+events{}
+
+http {
+
+    server {
+        listen 80;
+        server_name {{ N8N_HOSTNAME }} {{ SUPABASE_HOSTNAME }};
+
+        location / {
+            return 301 https://$host$request_uri;
+        }
+    }
+    
+    server {
+        listen 443 ssl;
+        server_name {{ N8N_HOSTNAME }};
+
+        ssl_certificate /etc/nginx/certs/fullchain.pem;
+        ssl_certificate_key /etc/nginx/certs/privkey.pem;
+
+        # Increase buffer & timeout limits for WebSockets
+        proxy_buffering off;
+        proxy_request_buffering off;
+
+
+        location / {
+            proxy_pass http://n8n:5678;
+
+            # WebSocket support
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+
+            # Preserve client headers
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+
+            # Long timeout for workflows
+            proxy_read_timeout 3600;
+            proxy_send_timeout 3600;
+        }
+    }
+
+    server {
+        listen 443 ssl;
+        server_name {{ SUPABASE_HOSTNAME }};
+
+        ssl_certificate /etc/nginx/certs/fullchain.pem;
+        ssl_certificate_key /etc/nginx/certs/privkey.pem;
+
+        # Increase buffer sizes if needed
+        client_max_body_size 50M;
+
+        location / {
+            proxy_pass http://kong:8000;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_read_timeout 3600;
+            proxy_send_timeout 3600;
+        }
+    }
+
+    server {
+        listen 443 ssl;
+        server_name {{ QDRANT_HOSTNAME }};
+
+        ssl_certificate /etc/nginx/certs/fullchain.pem;
+        ssl_certificate_key /etc/nginx/certs/privkey.pem;
+
+        # Increase buffer sizes if needed
+        client_max_body_size 50M;
+
+        location / {
+            proxy_pass http://qdrant:6333;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_read_timeout 3600;
+            proxy_send_timeout 3600;
+        }
+    }
+}

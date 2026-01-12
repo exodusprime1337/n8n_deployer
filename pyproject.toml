@@ -1,0 +1,13 @@
+[project]
+name = "prod-n8n"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "jinja2>=3.1.6",
+    "pathlib>=1.0.1",
+    "pyjwt>=2.10.1",
+    "python-dotenv>=1.1.1",
+    "questionary>=2.1.0",
+]
