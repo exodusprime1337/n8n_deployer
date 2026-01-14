@@ -43,8 +43,8 @@ services:
       EXECUTIONS_MODE: queue
       QUEUE_BULL_REDIS_HOST: redis
       QUEUE_BULL_REDIS_PORT: 6379
-    ports:
-      - 5678:5678
+    expose:
+      - 5678/tcp
     volumes:
       - n8n_storage:/home/node/.n8n
     depends_on:
@@ -159,8 +159,8 @@ services:
     environment:
       QDRANT__SERVICE__API_KEY: ${QDRANT__SERVICE__API_KEY}
     restart: unless-stopped
-    ports:
-      - 6333:6333
+    expose:
+      - 6333/tcp
     volumes:
       - qdrant_storage:/qdrant/storage
 
