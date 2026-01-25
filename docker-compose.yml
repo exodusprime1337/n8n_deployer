@@ -31,6 +31,7 @@ services:
       N8N_RUNNERS_AUTH_TOKEN: ${N8N_RUNNERS_AUTH_TOKEN}
       N8N_NATIVE_PYTHON_RUNNER: true
       N8N_METRICS: true
+      OFFLOAD_MANUAL_EXECUTIONS_TO_WORKERS: true
       QUEUE_HEALTH_CHECK_ACTIVE: true
       EXECUTIONS_DATA_SAVE_ON_ERROR: all
       EXECUTIONS_DATA_SAVE_ON_SUCCESS: none
@@ -77,6 +78,7 @@ services:
       # Must match the main container if using encryption
       # N8N Settings
       NODE_ENV: production
+      WEBHOOK_URL: ${WEBHOOK_URL}
       N8N_DIAGNOSTICS_ENABLED: false
       N8N_PERSONALIZATION_ENABLED: false
       N8N_RUNNERS_BROKER_LISTEN_ADDRESS: 0.0.0.0
