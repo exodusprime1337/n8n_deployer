@@ -35,7 +35,6 @@ This project provides a deployment setup for [n8n](https://n8n.io/) and [Supabas
    ```
 
 2. **Create the environment file**
-
    - When running the environment creator, you'll be asked to supply domains for supabase and N8N. Remember these as they'll need matching certs below. Especially if you're creating test certs. Lets assume the domains will be **https://n8n.mydomain.com** and **https://supabase.mydomain.com**
 
    ```bash
@@ -43,7 +42,6 @@ This project provides a deployment setup for [n8n](https://n8n.io/) and [Supabas
    ```
 
 3. **Create or supply your SSL certs.**
-
    - You can create test certs for your domain using the below code.
 
    ```bash
@@ -69,7 +67,6 @@ This project provides a deployment setup for [n8n](https://n8n.io/) and [Supabas
    For actual domains and the Nginx proxy, this guide assumes you know how to create and provision certs for use with NGINX but you're more than welcome to modify and use a reverse proxy of your own choosing, or just access the endpoints directly from the host.
 
    In a more production environment it is best to only expose the services liek Qdrant, N8N, and supabase to a proxy and not access or interact with these resources directly as there are a multitude of security concerns.
-
    - n8n: [https://n8n.mydomain.com](https://n8n.mydomain.com)
    - Supabase: [https://supabase.mydomain.com](ttps://supabase.mydomain.com)
 
@@ -90,6 +87,39 @@ To use Supabase you need to create a credential inside of N8N for your users to 
 3. Search for **Qdrant** in the menu that appears.
 4. For the host use the internal docker hostname **http://qdrant:6333** and paste in the **QDRANT**SERVICE**API_KEY**
 5. Give the credential a meaningful name at the top and save the credential.
+
+## Backup up N8N
+
+Self hosting N8N carries a significant risk if you intend to run workflows in any production capacity. It is strongly recommended you backup your database, volumes, .env files and any other pertinent data. To that end a backup script is included for you to use if you wish to set up some rudimentary backups in case you should have an issue with your instance.
+
+The following items are backed up for you and kept for 14 days. You can change retention as needed
+
+- Volume backups
+- .env backups
+- database backups
+
+Please follow the below steps to set up backups of your instance.
+
+1. In a code editor modify the following pieces to match your environment.
+
+   ```bash
+   PROJECT_NAME="n8n"
+   PROJECT_ROOT_DIR="/containers/n8n_deployer"
+   BACKUP_ROOT="/containers/n8n_deployer/backups"
+   RETENTION_DAYS=14
+
+   # Docker service/container names
+   POSTGRES_CONTAINER="n8n_db"
+   N8N_VOLUME="n8n_storage"
+   POSTGRES_VOLUME="db_storage"
+
+   # Postgres creds (should match .env)
+   POSTGRES_DB="n8n_db"
+   POSTGRES_USER="postgres"
+   ```
+
+2. Make sure the script is executable using `chmod +x ./n8n_backup.sh`
+3. You can run the script manually using `bash ./n8n_backup.sh` or schedule it to run daily using cron.
 
 ## Folder structure
 
