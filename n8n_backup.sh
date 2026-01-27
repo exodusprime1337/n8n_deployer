@@ -82,7 +82,7 @@ fi
 # 4️⃣ ROTATION / CLEANUP
 # ========================
 
-echo "--- Cleaning up old backups (>${RETENTION_DAYS} days) ---
+echo "--- Cleaning up old backups (>${RETENTION_DAYS} days) ---"
 
 find "$BACKUP_ROOT" -type f -mtime +"$RETENTION_DAYS" -delete
 
