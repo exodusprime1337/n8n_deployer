@@ -1,24 +1,13 @@
-events {}
+events{}
 
 http {
-    # Docker embedded DNS — runtime resolution
-    resolver 127.0.0.11 valid=10s;
-
-    # Global error_page declaration is allowed here
-    error_page 502 503 504 /50x.html;
 
     server {
         listen 80;
-        server_name {{ N8N_HOSTNAME }} {{ SUPABASE_HOSTNAME }} {{ QDRANT_HOSTNAME }};
+        server_name {{ N8N_HOSTNAME }} {{ SUPABASE_HOSTNAME }};
 
         location / {
             return 301 https://$host$request_uri;
-        }
-
-        # local internal error page for this server
-        location = /50x.html {
-            internal;
-            return 503 "Service temporarily unavailable\n";
         }
     }
     
@@ -29,15 +18,13 @@ http {
         ssl_certificate /etc/nginx/certs/fullchain.pem;
         ssl_certificate_key /etc/nginx/certs/privkey.pem;
 
-        # Backend defined INSIDE server (valid scope)
-        set $n8n_backend http://n8n:5678;
-
-        # WebSocket tuning
+        # Increase buffer & timeout limits for WebSockets
         proxy_buffering off;
         proxy_request_buffering off;
 
+
         location / {
-            proxy_pass $n8n_backend;
+            proxy_pass http://n8n:5678;
 
             # WebSocket support
             proxy_http_version 1.1;
@@ -50,17 +37,9 @@ http {
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
             proxy_set_header X-Forwarded-Proto $scheme;
 
-            # Long-running workflows
+            # Long timeout for workflows
             proxy_read_timeout 3600;
             proxy_send_timeout 3600;
-
-            proxy_next_upstream error timeout;
-        }
-
-        # internal error page for this server
-        location = /50x.html {
-            internal;
-            return 503 "Service temporarily unavailable\n";
         }
     }
 
@@ -71,24 +50,17 @@ http {
         ssl_certificate /etc/nginx/certs/fullchain.pem;
         ssl_certificate_key /etc/nginx/certs/privkey.pem;
 
-        set $kong_backend http://kong:8000;
-
+        # Increase buffer sizes if needed
         client_max_body_size 50M;
 
         location / {
-            proxy_pass $kong_backend;
+            proxy_pass http://kong:8000;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
             proxy_set_header X-Forwarded-Proto $scheme;
             proxy_read_timeout 3600;
             proxy_send_timeout 3600;
-            proxy_next_upstream error timeout;
-        }
-
-        location = /50x.html {
-            internal;
-            return 503 "Service temporarily unavailable\n";
         }
     }
 
@@ -99,24 +71,17 @@ http {
         ssl_certificate /etc/nginx/certs/fullchain.pem;
         ssl_certificate_key /etc/nginx/certs/privkey.pem;
 
-        set $qdrant_backend http://qdrant:6333;
-
+        # Increase buffer sizes if needed
         client_max_body_size 50M;
 
         location / {
-            proxy_pass $qdrant_backend;
+            proxy_pass http://qdrant:6333;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
             proxy_set_header X-Forwarded-Proto $scheme;
             proxy_read_timeout 3600;
             proxy_send_timeout 3600;
-            proxy_next_upstream error timeout;
-        }
-
-        location = /50x.html {
-            internal;
-            return 503 "Service temporarily unavailable\n";
         }
     }
 }

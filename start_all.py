@@ -30,7 +30,15 @@ def clone_supabase_repo():
     """
     if not Path("supabase").exists():
         print("Cloning Supabase repository...")
-        run_command(["git", "clone", "--filter=blob:none", "--no-checkout", f"{SUPA_BASE_REPO_URL}"])
+        run_command(
+            [
+                "git",
+                "clone",
+                "--filter=blob:none",
+                "--no-checkout",
+                f"{SUPA_BASE_REPO_URL}",
+            ]
+        )
         os.chdir("supabase")
         run_command(["git", "sparse-checkout", "init", "--cone"])
         run_command(["git", "sparse-checkout", "set", "docker"])
@@ -59,7 +67,9 @@ def stop_existing_containers():
     Stop and remove any existing Docker containers for the 'localai' project.
     This ensures a clean start for all services.
     """
-    print("Stopping and removing existing containers for the unified project 'localai'...")
+    print(
+        "Stopping and removing existing containers for the unified project 'localai'..."
+    )
     cmd = ["docker", "compose", "-p", "localai", "-f", "docker-compose.yml", "down"]
     run_command(cmd)
 
@@ -71,7 +81,16 @@ def start_supabase(environment=None):
         environment (dict, optional): Environment variables to pass (not used here).
     """
     print("Starting Supabase services...")
-    cmd = ["docker", "compose", "-p", "localai", "-f", "supabase/docker/docker-compose.yml", "up", "-d"]
+    cmd = [
+        "docker",
+        "compose",
+        "-p",
+        "localai",
+        "-f",
+        "supabase/docker/docker-compose.yml",
+        "up",
+        "-d",
+    ]
     run_command(cmd)
 
 
@@ -99,8 +118,6 @@ def main():
     # Start Supabase first
     start_supabase()
     # Give Supabase some time to initialize
-    print("Waiting for Supabase to initialize...")
-    time.sleep(10)
     # Then start the local AI services
     start_local_ai()
 
