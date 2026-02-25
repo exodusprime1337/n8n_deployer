@@ -345,6 +345,9 @@ class EnvFileCreator:
             ## Phone auth
             ENABLE_PHONE_SIGNUP=true
             ENABLE_PHONE_AUTOCONFIRM=true
+
+            ## Storage
+            REGION=local
                                       """
             )
         )
