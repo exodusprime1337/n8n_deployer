@@ -166,6 +166,16 @@ class EnvFileCreator:
         self.n8n_hostname = self.safe_prompt(
             "Enter the value for N8N WEBHOOK_URL: ", default="n8n.local.mydomain.com"
         )
+        self.add_line(
+            "N8N_VERSION",
+            self.safe_prompt("Enter the value for N8N_VERSION: ", default="2.8.3"),
+        )
+        self.add_line(
+            "N8N_TIMEZONE",
+            self.safe_prompt(
+                "Enter the appropriate timezone: ", default="America/Chicago"
+            ),
+        )
         self.add_line("N8N_ENCRYPTION_KEY", self.create_32_char_hex_secret())
         self.add_line("N8N_RUNNERS_AUTH_TOKEN", f'"{self.generate_password(16)}"')
         self.nginx_urls["N8N_HOSTNAME"] = self.n8n_hostname.strip("https://").strip("/")

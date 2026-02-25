@@ -4,12 +4,16 @@ This project provides a deployment setup for [n8n](https://n8n.io/) and [Supabas
 
 | Component | Version  |
 | --------- | -------- |
-| n8n       | ` 2.2.4` |
+| n8n       | ` 2.8.3` |
 | Qdrant    | `1.16.3` |
+| Supabase  | `latest` |
 
 ## Features
 
 - Automated environment file creation
+- Basic security hardening for production runs
+- Basic install of qdrant for RAG operations
+- Default install of Supabase to serve as a working data table while the N8N one is failing for community installs
 - Easy startup and management scripts
 - NGINX reverse proxy configuration
 - Docker Compose orchestration for n8n and Supabase
@@ -67,8 +71,9 @@ This project provides a deployment setup for [n8n](https://n8n.io/) and [Supabas
    For actual domains and the Nginx proxy, this guide assumes you know how to create and provision certs for use with NGINX but you're more than welcome to modify and use a reverse proxy of your own choosing, or just access the endpoints directly from the host.
 
    In a more production environment it is best to only expose the services liek Qdrant, N8N, and supabase to a proxy and not access or interact with these resources directly as there are a multitude of security concerns.
-   - n8n: [https://n8n.mydomain.com](https://n8n.mydomain.com)
-   - Supabase: [https://supabase.mydomain.com](ttps://supabase.mydomain.com)
+   - n8n: [https://n8n.mydomain.com](https://n8n.local.mydomain.com)
+   - Supabase: [https://supabase.mydomain.com](https://supabase.local.mydomain.com)
+   - Qdrant: [https://qdrant.local.mydomain.com](https://qdrant.local.mydomain.com)
 
 ## Creating Supabase creds inside of N8N.
 
