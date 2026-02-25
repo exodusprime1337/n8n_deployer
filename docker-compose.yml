@@ -7,12 +7,25 @@ services:
     restart: unless-stopped
     container_name: n8n
     environment:
+      # N8N Core
+      NODE_ENV: production
+      WEBHOOK_URL: ${WEBHOOK_URL}
+      N8N_EDITOR_BASE_URL: ${N8N_EDITOR_BASE_URL}
+      TZ: ${N8N_TIMEZONE}
+      GENERIC_TIMEZONE: ${N8N_TIMEZONE}
+
       # DB Settings
       DB_TYPE: postgresdb
       DB_POSTGRESDB_HOST: n8n_db
       DB_POSTGRESDB_USER: ${N8N_POSTGRES_NON_ROOT_USER}
       DB_POSTGRESDB_PASSWORD: ${N8N_POSTGRES_NON_ROOT_PASSWORD}
       DB_POSTGRESDB_DATABASE: ${N8N_POSTGRES_DB}
+
+      # Queue mode settings
+      EXECUTIONS_MODE: queue
+      QUEUE_BULL_REDIS_HOST: redis
+      QUEUE_BULL_REDIS_PORT: 6379
+
       # N8N Data Settings
       EXECUTIONS_DATA_SAVE_ON_ERROR: all
       EXECUTIONS_DATA_SAVE_ON_SUCCESS: all
@@ -21,21 +34,20 @@ services:
       EXECUTIONS_DATA_PRUNE: true
       EXECUTIONS_DATA_MAX_AGE: 336
       EXECUTIONS_DATA_PRUNE_MAX_COUNT: 50000
-      # N8N Settings
-      NODE_ENV: production
+
+      # N8N Behavior
       N8N_PROXY_HOPS: 1
       N8N_DIAGNOSTICS_ENABLED: true
       N8N_PERSONALIZATION_ENABLED: false
       N8N_HIRING_BANNER_ENABLED: false
       N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY}
-      WEBHOOK_URL: ${WEBHOOK_URL}
-      N8N_EDITOR_BASE_URL: ${N8N_EDITOR_BASE_URL}
-      TZ: ${N8N_TIMEZONE}
-      GENERIC_TIMEZONE: ${N8N_TIMEZONE}
+
+      # Security
       N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS: true
       N8N_BLOCK_ENV_ACCESS_IN_NODE: true
       N8N_BLOCK_FILE_ACCESS_TO_N8N_FILES: true
       N8N_SECURE_COOKIE: true
+
       # N8N Runners Settings
       N8N_RUNNERS_ENABLED: true
       N8N_RUNNERS_BROKER_LISTEN_ADDRESS: 0.0.0.0
@@ -43,14 +55,11 @@ services:
       N8N_RUNNERS_MODE: external
       N8N_RUNNERS_AUTH_TOKEN: ${N8N_RUNNERS_AUTH_TOKEN}
       N8N_NATIVE_PYTHON_RUNNER: true
+
+      # Metrics / Health
       N8N_METRICS: true
       OFFLOAD_MANUAL_EXECUTIONS_TO_WORKERS: true
       QUEUE_HEALTH_CHECK_ACTIVE: true
-
-      # Queue mode settings
-      EXECUTIONS_MODE: queue
-      QUEUE_BULL_REDIS_HOST: redis
-      QUEUE_BULL_REDIS_PORT: 6379
     expose:
       - 5678/tcp
     volumes:
@@ -67,14 +76,20 @@ services:
     volumes:
       - n8n_worker_storage:/home/node/.n8n
     environment:
-      # --- Database (Postgres) ---
+      # N8N Core
+      NODE_ENV: production
+      WEBHOOK_URL: ${WEBHOOK_URL}
+      TZ: ${N8N_TIMEZONE}
+      GENERIC_TIMEZONE: ${N8N_TIMEZONE}
+
+      # Database (Postgres)
       DB_TYPE: postgresdb
       DB_POSTGRESDB_HOST: n8n_db
       DB_POSTGRESDB_USER: ${N8N_POSTGRES_NON_ROOT_USER}
       DB_POSTGRESDB_PASSWORD: ${N8N_POSTGRES_NON_ROOT_PASSWORD}
       DB_POSTGRESDB_DATABASE: ${N8N_POSTGRES_DB}
 
-      # --- Queue mode (Redis/Bull) ---
+      # Queue mode (Redis/Bull)
       EXECUTIONS_MODE: queue
       QUEUE_BULL_REDIS_HOST: redis
       QUEUE_BULL_REDIS_PORT: 6379
@@ -84,8 +99,6 @@ services:
 
       # Must match the main container if using encryption
       # N8N Settings
-      NODE_ENV: production
-      WEBHOOK_URL: ${WEBHOOK_URL}
       N8N_DIAGNOSTICS_ENABLED: false
       N8N_PERSONALIZATION_ENABLED: false
       N8N_RUNNERS_BROKER_LISTEN_ADDRESS: 0.0.0.0
@@ -97,8 +110,7 @@ services:
       N8N_RUNNERS_MODE: external
       N8N_RUNNERS_AUTH_TOKEN: ${N8N_RUNNERS_AUTH_TOKEN}
       N8N_NATIVE_PYTHON_RUNNER: true
-      TZ: ${N8N_TIMEZONE}
-      GENERIC_TIMEZONE: ${N8N_TIMEZONE}
+      # Security
       N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS: true
       N8N_BLOCK_ENV_ACCESS_IN_NODE: true
       N8N_BLOCK_FILE_ACCESS_TO_N8N_FILES: true
