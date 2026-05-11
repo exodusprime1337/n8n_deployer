@@ -6,8 +6,8 @@ set -euo pipefail
 # ========================
 
 PROJECT_NAME="n8n"
-PROJECT_ROOT_DIR="/containers/n8n_deployer"
-BACKUP_ROOT="/containers/n8n_deployer/backups"
+PROJECT_ROOT_DIR="/Users/ksambrook/dev/scratch/n8n_deployer"
+BACKUP_ROOT="/Users/ksambrook/dev/scratch/n8n_deployer/backups"
 RETENTION_DAYS=14
 
 # Docker service/container names

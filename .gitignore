@@ -16,3 +16,6 @@ supabase/
 # Nginx generated files
 *.pem
 nginx/nginx.conf
+
+# backups and envs
+backups/
